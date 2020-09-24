@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="json_to_all_types_transformation" doc:id="2e018775-4730-4343-8849-d85df9b0b443" >
+		<ee:transform doc:name="Transform Message" doc:id="5fe0c0f8-feea-4c3c-9fea-53ea0f7fcd1f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml //Transforming into xml
+--- 
+ emp: //This root element is manadatory in xml
+ {
+	eId: payload.eId,
+	ename: payload.ename,
+	Email: payload.Email,
+	status: payload.status
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="json" ><![CDATA[%dw 2.0
+output application/json //Transforming into json
+---
+ 
+  {
+	eId: payload.eId,
+	ename: payload.ename,
+	Email: payload.Email,
+	status: payload.status
+}]]></ee:set-variable>
+				<ee:set-variable variableName="csv" ><![CDATA[%dw 2.0
+output application/csv //Transforming into csv
+---
+ 
+  {
+	eId: payload.eId,
+	ename: payload.ename,
+	Email: payload.Email,
+	status: payload.status
+}]]></ee:set-variable>
+				<ee:set-variable variableName="java" ><![CDATA[%dw 2.0
+output application/java //To Transforming into java
+---
+ 
+  {
+	eId: payload.eId,
+	ename: payload.ename,
+	Email: payload.Email,
+	status: payload.status
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</flow>
+	<flow name="dataweave_demoFlow" doc:id="d2ed0c7f-9dd2-473c-8248-c23d48cf3702" >
+		<ee:transform doc:name="xml to json" doc:id="81e81395-894c-45ef-a8f0-45d21043bd24" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+{
+	book: {
+		title @(lang: payload.book.title.@lang): payload.book.title,
+		year: payload.book.year,
+		location @(city: payload.book.location.@city): payload.book.location
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweave_demoFlow2" doc:id="054bf3aa-d1d1-4baa-b684-fd68f3fd6699" >
+		<ee:transform doc:name="json to csv" doc:id="2649d584-42ec-48a4-acb1-327d1692a51f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/csv headerLineNumber = 0 , header = true
+---
+[{
+	title: payload.item.properties.title,
+	year: payload.item.properties.year as String,
+	author: payload.item.properties.Author[0],
+	location: payload.item.properties.location
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweave_demoFlow1" doc:id="38e1c00c-0e79-4ccd-a8ce-257854ca014c" >
+		<ee:transform doc:name="json to xml" doc:id="6c5e83e4-34ff-432a-a29d-b0c7224f758c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+{
+	book: {
+		title @(lang: payload.item.properties.language): payload.item.properties.title,
+		author: payload.item.properties.Author[0],
+		location: payload.item.properties.location
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweave_demoFlow3" doc:id="7b82bd54-10b2-42dd-8549-9d54e124963b" >
+		<ee:transform doc:name="XML TO CSV" doc:id="7227fc34-e46c-4db7-9ce9-97ba744e8c54" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/csv headerLineNumber = 0 , header = true
+---
+[{
+	title: payload.book.title,
+	year: payload.book.year as String,
+	author: payload.book.author,
+	location: payload.book.location
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweave_demoFlow4" doc:id="a90ddbb4-9050-400d-b6dd-f8d20ee5b96c" >
+		<ee:transform doc:name="xml to xlsx" doc:id="16c6f7f3-526b-411e-9ac2-02ef6ebd78e7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xlsx
+---
+{
+	Sheet1: [{
+		title: payload.book.title,
+		author: (payload.book.authordefault "") ++ payload.book.author
+	}]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

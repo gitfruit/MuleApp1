@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="person1" format="json">
+      <types:shape format="weave" example="examples/emp.json"><![CDATA[%dw 2.0
+
+type person1 = {|
+  eId: Number {"typeId": "int"}, 
+  ename: String, 
+  Email: String, 
+  status: String
+|} {"example": "{\\\"eId\\\":2345,\\\"ename\\\":\\\"RAMANA\\\",\\\"Email\\\":\\\"Ramana@gmail.com\\\",\\\"status\\\":\\\"Approved\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="book" format="xml">
+      <types:example format="xml" element="book" location="examples/book.xml"/>
+    </types:type>
+    <types:type name="BOOK_JSON" format="json">
+      <types:shape format="weave" example="examples/book.json"><![CDATA[%dw 2.0
+
+type BOOK_JSON = {|
+  item: {|
+    "type": String, 
+    price: String, 
+    properties: {|
+      title: String, 
+      Author: Array<String>, 
+      year: Number {"typeId": "int"}, 
+      language: String, 
+      location: String
+    |}
+  |}
+|} {"example": "{\\\"item\\\":{\\\"type\\\":\\\"book\\\",\\\"price\\\":\\\"30\\\",\\\"properties\\\":{\\\"title\\\":\\\"WingsOfFire\\\",\\\"Author\\\":[\\\"AbdulKalam\\\"],\\\"year\\\":2005,\\\"language\\\":\\\"telugu\\\",\\\"location\\\":\\\"Hyd\\\"}}}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="booK_CSV" format="csv">
+      <types:shape format="weave" example="examples/book.csv"><![CDATA[%dw 2.0
+
+type booK_CSV = Array<{|  title: String,   year: String,   author: String,   location: String|}> {"isQuotedString": "false",
+"header": "true",
+"headerLineNumber": "0"}
+
+]]></types:shape>
+      <types:properties>
+        <types:property name="headerLineNumber" value="0"/>
+        <types:property name="header" value="true"/>
+        <types:property name="isQuotedString" value="false"/>
+      </types:properties>
+    </types:type>
+    <types:type name="Sheet1" format="excel">
+      <types:shape format="weave"><![CDATA[%dw 2.0
+
+type Sheet1 = {|
+  Sheet1?: Array<{|    title: String,     year: String,     author: String,     Location: String  |}>
+|}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#5fe0c0f8-feea-4c3c-9fea-53ea0f7fcd1f">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="person1"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="person1"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#81e81395-894c-45ef-a8f0-45d21043bd24">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="book"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="book"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#6c5e83e4-34ff-432a-a29d-b0c7224f758c">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="BOOK_JSON"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="book"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#2649d584-42ec-48a4-acb1-327d1692a51f">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="BOOK_JSON"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="booK_CSV"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#7227fc34-e46c-4db7-9ce9-97ba744e8c54">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="book"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="booK_CSV"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#16c6f7f3-526b-411e-9ac2-02ef6ebd78e7">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="book"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="Sheet1"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

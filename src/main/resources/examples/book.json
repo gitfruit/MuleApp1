@@ -1,0 +1,15 @@
+ {
+   "item":{
+    "type" : "book",
+	 "price" : "30",
+	 "properties": {
+	  "title" : "WingsOfFire",
+	  "Author" : [ "AbdulKalam" ] ,
+	  "year" : 2005,
+	  "language" : "telugu",
+	  "location" : "Hyd"
+	 }
+	 
+   }
+ 
+ }

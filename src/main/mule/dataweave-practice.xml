@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="7f7a6c9e-4a13-4124-b92a-b111c93e7a44" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="dataweave-practiceFlow" doc:id="0f33ef55-5017-4823-8a94-f4cf353692b9" >
+		<ee:transform doc:name="dataweave-practiceFlow Transform" doc:id="6216c8ce-1892-48d0-b9cc-814d2fc9b443" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+var emp = "John" 
+var empId =12
+var empAddress=  {
+	 street: "Ameerpet",
+	 city: "HYD",
+	 pin: 245
+}
+---
+{
+employee : {
+	empname: emp,
+	empId : empId,
+	empstreet: empAddress.street,
+	empAddress : empAddress.city,
+	emppincode : empAddress.pin
+}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="arithematic-comparator-operators" doc:id="f37e861b-f0b2-4382-8fb1-3bbf451ade52" >
+		<ee:transform doc:name="arithematic-comparator-operators-transform" doc:id="b7c005ba-9013-487a-82f4-283f2c2db289" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var firstNumber=45
+var secondNumber=34
+var firstName="mule"
+var secondName="ESB"
+var empArray=["John","srin","RAm","krishna"]
+var empObject={
+	"empname" : "TOM",
+	"empId" : 435,
+	"empAddress": "HYD"
+} 
+var empList=[
+	{
+	"empname" : "TOM",
+	"empId" : 435,
+	"empAddress": "HYD"
+    } ,
+    {
+	"empname" : "lary",
+	"empId" :755 ,
+	"empAddress": "BGLR"
+} 
+]
+---
+[
+	{
+		ArithematicOperations:{
+			addition:firstNumber+secondNumber,
+			subtraction:firstNumber-secondNumber,
+			multiplication: firstNumber*secondNumber,
+			division : firstNumber/secondNumber
+		}
+	},
+	{
+		comparisionOperators:{
+			equalto: firstNumber==secondNumber,
+			notequalto : firstNumber != secondNumber,
+          greaterthan : firstNumber >secondNumber,
+			lessthan : firstNumber < secondNumber,
+			greaterthanequalto: firstNumber>= secondNumber,
+			lessthanequalto : firstNumber <= secondNumber,
+			empArray : empArray ,
+			newempArray : empArray -- ["John"] ++ ["Harry"],
+			empObject : empObject ,
+			newempObject : empObject -- {"empname": "TOM"} ++ {"empSal": 245435},
+			empList : empList,
+			newEmpList : empList --[{
+							          "empname": "lary",
+							          "empId": 755,
+							          "empAddress": "BGLR"
+							        }]   
+							        ++ 
+							        [{
+							          "empname": "GANESH",
+							          "empId": 43646,
+							          "empAddress": "CHENNAI"
+							        }]
+							       	 ++ [
+							       	 	{
+							       	 		"empdesig":
+							       	 		      "tester"
+							       	 	}
+							       	 ]
+			
+		}
+	}
+]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweave-practiceFlow1" doc:id="28ac8ad4-eb3d-4c65-910c-aa0357882a73" >
+		<ee:transform doc:name="COERCION_EXAMPLE" doc:id="aa3d9cc9-cb6c-4141-bc3b-a97a72952352" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+var empObject = {
+	"empName" : "Tom",
+	"empsal" : "345435",
+	"empId"  : "345",
+	 "empstatus" : "true" ,
+	  "empLoc" : "bngl"
+}
+---
+  {
+	Name : empObject.empName as String default "Ram", 
+	salary : empObject.empsal as Number default 4535,
+	 Id : empObject.empId as Number default 345,
+	 status : empObject.empstatus as Boolean default false 	
+	}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweave-practiceFlow2" doc:id="1d2e71c2-3b63-4c1c-9c0c-504f661ab9db" >
+		<ee:transform doc:name="DATE TYPES EXAMPLES" doc:id="ae4ec6fa-e1cb-4585-a96f-b30294c65c0c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"todayDate" : now() as Date {format:"dd-MMM-yyyy"},
+	"todayTimeDate" : now(),
+	"todayTime" : now() as Time {format : "HH:mm:SS:SSSS"},
+	"currentdatetime" : now() as DateTime { formt : "dd-MM-yy hh:mm:ss:ssss"},
+	 "UTC" : now() >> "UTC",
+	 "UTC_TO_IST" : ( now() >> "UTC" ) >> "IST",
+	 "IST"  : now() >> "IST",
+	 "EST"  : now() >> "EST",
+	 "NewYork_time" : now() >> "America/New_York",
+	 "London_time"  : now()  >> "Europe/Belfast"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweave-practiceFlow3" doc:id="26105432-32aa-4628-b682-9140a294ffbe" >
+		<ee:transform doc:name="conditional_statments_if_else" doc:id="c632ea2b-5075-4815-8ec7-b2a57c89d633" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json 
+var country = "IND"
+var city =  null
+---
+//one way of writing IF ELSE ON TOP OF OBJECT
+//if (country == "USA") {
+//		currency: "USD",
+//		city: city
+//	}
+//else if(country== "IND"){
+//	currency: "INR",
+//		city: city
+//}
+//else {
+//		currency : "none",
+//		city : "none"
+//	}
+//Another  of writing IF ELSE inside OBJECT
+{
+  country : if(country=="IND") "INR" else "NONE",
+  city : if(city !=null) city as String else " ",
+  (city : city ) if(city != null)//this is the kind of writing only if to avoid null fields
+   
+}
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweave-practiceFlow4" doc:id="c62dac1c-04fa-4291-bbe1-38a66c47741b" >
+		<http:listener doc:name="Listener" doc:id="429d19c0-f1a7-46e4-92af-260e96063099" config-ref="HTTP_Listener_config" path="/exp"/>
+		<ee:transform doc:name="predefined_date_functions" doc:id="6f24c4d0-2d42-4171-8085-1b8ae6c8fe68" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+fun experience(join_date) = daysBetween(join_date,now())/365 //user defined function
+---
+{
+	"currentdateTime" :now(),
+	"nanoseconds" : now().nanoseconds,
+	"milliseconds" : now().milliseconds,
+	"seconds" : now().seconds,
+	"minutes" :now().minutes,
+	"hours" : now().hour,
+	"days" : now().day,
+	"month" : now().month ,
+	"Year" : now().year,
+	   "dayOfWeek" :    now().dayOfWeek,
+	   "isleapyear" : isLeapYear(now()),
+	   "isLeapYear"  : isLeapYear(|2019-08-02T12:55:22Z|),
+	   "daysbetween" : daysBetween(|2019-08-02T12:55:22Z|,now()),
+	   "totalexperience in years" : experience(|2019-08-02T12:55:22Z|)
+	   
+	   
+	   
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweave-practiceFlow5" doc:id="9af8f51c-b283-44b4-84cd-288e7da81848" >
+		<ee:transform doc:name="dataweave-mathfunctions" doc:id="66f999e2-b076-4049-a900-38d56ca58614" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	//abs function returns the absolute value(Positive) of a number
+	"absNumb1" :abs(-1),
+	"absNumb2" : abs(0.5),
+	"absNumb3" : abs(-5.6),
+	//avg function return the average value given numbers 
+	"avg1": avg([425,25,54]),
+	"avg2" : avg([3,4,6,64]),
+	//ceil function returns the  round nearer upper  value of number
+	"ceil1": ceil(24.5),
+	"ceil2" : ceil(5.3),
+	"ceil3" : ceil(4.5),
+	//floor function returns the  round nearer lower  value of number
+	"floor1" : floor(54.55),
+	"floor2" : floor(3.1),
+	"floor3" : floor(5.5),
+	//min function returns the minimum value of give numbers
+	"min1" : min([35,64,97]),
+	"min2" : min([0.5,5.3,8.3]),
+	//minBy function returns the  minimum value in given objects
+    "minBy1" : [ { "a" : 1 }, { "a" : 2 }, { "a" : 3 }, { "a" : 4 } ] minBy(item) -> item.a,
+   //max function returns the maximum value of given numbers
+    "max1" : max([43,454,646,46,93,12,8]),
+    //max By function returns the maximum value in given objects
+      "maxBy" : [{"a":1},{"a":5},{"a":8}] maxBy(item)-> item.a,
+      //iseven function
+      "iseven1" : isEven(12),
+      "iseven2" : isEven(35),
+      //isOdd function
+      "isOdd1" : isOdd(15),
+      "isOdd2" :isOdd(32),
+      "isOdd3"  : isOdd(432.4),
+      //isInteger function
+      "isInteger" : isInteger(13),
+       "isInteger" : isInteger(12.5),
+       //isDecimal fucntion
+       "isDecimal1" : isDecimal(24),
+       "isDecimal2" : isDecimal(4.43)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweave-practiceFlow6" doc:id="16991a4f-9d9b-48a6-a8ed-3489b837f60b" >
+		<ee:transform doc:name="String functions -Transform" doc:id="f9ef2265-dc61-4d44-a9dd-74369522b3d7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var name= "Harry"
+---
+{
+	"containsEx" : "Mulesoft" contains "soft",
+	"findEx"     : "AnyPointStudio" find "o",
+	"findEx2_size"     :  sizeOf("Studiondesign" find ("d")),
+	"isBlankEx"   : isBlank("hello"),
+	"isEmpty"    :  isEmpty("wish"),
+	"lower"     : lower("MULE"),
+	"upper"      : upper("MULESOFT"),
+	"matches"   : "vsaikrisha@gmail.com" matches (/([a-z]*)@([a-z]*).com/),
+	"replaceex" : "Anypointplatform" replace "Any" with "Mule",
+	"splitBy" :  "a-b-c-d-z" splitBy "-",
+	"splitBy2" :  ("a-b-c-d-z" splitBy "-")[0],
+	"startsWith" : "Mulesoft" startsWith "Mule",
+	"endsWith"  :  "Mulesoft" endsWith "soft",
+	"trim"       : trim("   Mulesoft is a Integration tool    ")
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweave-practiceFlow7" doc:id="81f9de4b-ac1b-4055-af09-db34295eba6a" >
+		<ee:transform doc:name="Miscellaneous functions -Transform" doc:id="675f360b-39cc-4737-a436-e1d8ac7587b8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var empName = "Venkat"
+var cities =["hyd" , "Banglore" ,"chennai"] as Array
+var empDetails = {
+	"Designation" : "tester",
+	 "salary" : 3455,
+	 "city"  : "hyd"
+}
+var employeesDetails = [
+	{
+	"Designation" : "tester",
+	 "salary" : 3455,
+	 "city"  : "hyd"
+},
+{
+	"Designation" : "Developer",
+	 "salary" : 3466,
+	 "city"  : "Banglore"
+},
+{
+	"Designation" : "Manager",
+	 "salary" : 3477,
+	 "city"  : "chennai"
+}
+]
+---
+{
+	//miscellaneous functions
+	"sizeOf_example1" : sizeOf(empName),
+	"sizeOf_example2" : sizeOf(cities) ,
+	"sizeOf_example3"  : sizeOf(empDetails),
+	"sizeOf_example4"  : sizeOf(employeesDetails),
+	"entries_example" : entriesOf(empDetails),
+	"keys_example" : keysOf(empDetails),
+	"valuesOf"   : valuesOf(empDetails),
+	
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweave-practiceFlow8" doc:id="79547706-d30a-4e63-bcdc-53f2696d9347">
+		<ee:transform doc:name="map -filter-mapObject-filterObject Transform" doc:id="a6ab35a7-15d6-4457-9156-12883e8658bf">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+var empList =[ 
+	{
+	"Name" : "TOM",
+	"SAL"  : 435,
+	"ID"  : 1101,
+	"status" : "Inactive"
+	},
+	{
+	"Name" : "JOHN",
+	"SAL"  : 350,
+	"ID"  : 1102,
+	"status" : "Active"
+	},
+	{
+	"Name" : "RAM",
+	"SAL"  : 550,
+	"ID"  : 1103,
+	"status" : "Active"
+	}
+]
+---
+
+//map without parameters and with using $$ and $
+		//	empList map{
+		//		 ($$) : $  //($$) returns index and $ returns object (key & value pairs)
+		//	}
+
+//map without parameters and with $
+		//	empList map{
+		//		 "empName" : $.Name , // $ returns object 
+		//	     "empSal"  : $.SAL,
+		//	     "empId"  :  $.ID
+		//       "empStatus" : $.status
+		//	}
+	
+//map with parameters 
+		//	 empList map(emp,index) -> {
+		//		  "name": emp.Name  ,
+		//		  "sal" : emp.SAL,
+		//		  "empId" : emp.ID,
+		//       "empStatus" : emp.status
+		//		  	 
+		//	}
+
+//mapObject without paramters and with $$ , $$$ and $
+		//	empList[0] mapObject {
+		//		( $$ ): $ ,//$$ returns keys and $ returns values
+		//		($$) : $$$ // $$$ return index
+		//	}
+		
+//mapObject with parameters 
+		//   empList[1] mapObject (empValue,empkey,index) -> {
+		//   	(empkey) : empValue ,//emp key, empValue ,index returns key,value,index respectively
+		//    (empkey) : index
+		//   }
+		
+//map and mapObject  example
+		// empList map (emp,index) -> {
+		// 	 (emp mapObject {
+		// 	 	($$) : $
+		// 	 })
+		// }
+	
+//map and mapObject with if else
+		//		  empList map(emp,index) -> {
+		//		  	(emp mapObject if(($) as String =="RAM") {
+		//			($$) : $,
+		//			"Location" : "hyderabad"
+		//		  	 }else {
+		//		  	 	($$) : $
+		//		  	 }
+		//		  	)
+		//		  }
+
+//map with filter at starting
+		// empList filter( $.status  as String == "Active" ) map (emp,index) -> {
+		// 	"empName" : emp.Name,
+		// 	"empSal" : emp.SAL,
+		// 	"empId"  : emp.ID,
+		// 	"empStaus" : emp.status
+		// }
+ 
+ //map with filter at ending
+		//empList  map ((emp,index) -> {
+		// 	"empName" : emp.Name, 
+		// 	"empSal" : emp.SAL,
+		// 	"empId"  : emp.ID,
+		// 	"empStatus" : emp.status
+		// })filter( $.empStatus  == "Active" and $.empSal>400 )
+ 
+ //mapObject with filterObject
+ empList[2] filterObject( ($) as String == "RAM") mapObject (empValue,empkey,index)->{
+ 	(empkey) : empValue
+ }]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweave-practiceFlow9" doc:id="d22aa531-9915-4677-b885-58cba16ca690" >
+		<ee:transform doc:name="distinct by,group by, join by, order by -Transform" doc:id="91fe3343-399c-4019-ae0a-79d714e83baa" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var empList =[ 
+	{
+	"Name" : "TOM",
+	"SAL"  : 435,
+	"ID"  : 1101,
+	"status" : "Inactive"
+	},
+	{
+	"Name" : "TOM",
+	"SAL"  : 435,
+	"ID"  : 1101,
+	"status" : "Inactive"
+	},
+	{
+	"Name" : "JOHN",
+	"SAL"  : 350,
+	"ID"  : 1102,
+	"status" : "Active"
+	},
+	{
+	"Name" : "RAM",
+	"SAL"  : 550,
+	"ID"  : 1103,
+	"status" : "Active"
+	}
+]
+---
+{
+  "orderBy_employees_ASC" : empList orderBy $.ID, //ASCENDING
+  "orderBy_employees_DESC" : empList orderBy -$.ID , //DESCENDING
+  "groupBy_employees" : empList groupBy $.status,
+  "distinctBy_employees" : empList distinctBy $.Name,
+  "joinBy_employees" : empList.ID joinBy "-",
+  "joinsBy_employees_filter" : (empList filter($.status == "Active")).ID joinBy "*",
+  "employees_active" : empList (filter($.Name=='Active')) map(emp,index) -> {
+  	"eName" : emp.Name,
+  	"eSal"  : emp.SAL,
+  	"eId"   : emp.ID,
+  	"estatus" : emp.status
+  }
+  
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
